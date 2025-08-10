@@ -1,22 +1,16 @@
-import toast from "react-hot-toast";
+import { Formik, Form, Field, ErrorMessage as FormikErrorMessage } from "formik";
+import * as yup from "yup";
 import styles from "./SearchBar.module.css";
 
 interface SearchBarProps {
     onSubmit: (query: string) => void;
 }
 
+const validationSchema = yup.object().shape({
+    query: yup.string().trim().required("Please enter your search query."),
+});
+
 export default function SearchBar({ onSubmit }: SearchBarProps) {
-    async function handleFormAction(formData: FormData) {
-        const query = (formData.get("query") as string)?.trim();
-
-        if (!query) {
-            toast.error("Please enter your search query.");
-            return;
-        }
-
-        onSubmit(query);
-    }
-
     return (
         <header className={styles.header}>
             <div className={styles.container}>
@@ -28,19 +22,35 @@ export default function SearchBar({ onSubmit }: SearchBarProps) {
                 >
                     Powered by TMDB
                 </a>
-                <form className={styles.form} action={handleFormAction}>
-                    <input
-                        className={styles.input}
-                        type="text"
-                        name="query"
-                        autoComplete="off"
-                        placeholder="Search movies..."
-                        autoFocus
-                    />
-                    <button className={styles.button} type="submit">
-                        Search
-                    </button>
-                </form>
+                <Formik
+                    initialValues={{ query: "" }}
+                    validationSchema={validationSchema}
+                    onSubmit={(values, { setSubmitting }) => {
+                        onSubmit(values.query.trim());
+                        setSubmitting(false);
+                    }}
+                >
+                    {() => (
+                        <Form className={styles.form}>
+                            <div className={styles.inputContainer}>
+                                <Field
+                                    className={styles.input}
+                                    type="text"
+                                    name="query"
+                                    autoComplete="off"
+                                    placeholder="Search movies..."
+                                    autoFocus
+                                />
+                                <FormikErrorMessage name="query">
+                                    {msg => <div className={styles.error}>{msg}</div>}
+                                </FormikErrorMessage>
+                            </div>
+                            <button className={styles.button} type="submit">
+                                Search
+                            </button>
+                        </Form>
+                    )}
+                </Formik>
             </div>
         </header>
     );

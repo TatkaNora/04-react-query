@@ -1,34 +1,28 @@
 import axios from "axios";
-import { Movie } from "../types/movie";
-import toast from "react-hot-toast";
+import { MovieSearchResponse } from "../types/movie";
+import { toast, Toaster } from "react-hot-toast";
 
 const API_URL = "https://api.themoviedb.org/3/search/movie";
 
-interface FetchMoviesResponse {
-    results: Movie[];
-}
-
-export async function fetchMovies(query: string): Promise<Movie[]> {
-    if (!query.trim()) {
-        toast.error("Please enter your search query.");
-        return [];
-    }
-
+export async function fetchMovies(query: string, page: number): Promise<MovieSearchResponse | null> {
     const token = import.meta.env.VITE_API_MOVIE_TOKEN;
     if (!token) {
         toast.error("API token is missing. Check your .env file.");
-        return [];
+        console.log("API token is missing. Check your .env file.");
+        return null;
     }
 
     try {
-        const response = await axios.get<FetchMoviesResponse>(API_URL, {
-            params: { query },
+        const response = await axios.get<MovieSearchResponse>(API_URL, {
+            params: { query, page },
             headers: { Authorization: `Bearer ${token}` },
         });
-        return response.data.results;
+        if (response.data.results.length == 0) {
+            toast.error("No movies found for this search query.");
+        }
+        return response.data;
     } catch {
         toast.error("Failed to fetch movies. Please try again.");
-        return [];
+        return null;
     }
 }
-
