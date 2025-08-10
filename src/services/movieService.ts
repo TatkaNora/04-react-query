@@ -1,6 +1,6 @@
 import axios from "axios";
 import { MovieSearchResponse } from "../types/movie";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const API_URL = "https://api.themoviedb.org/3/search/movie";
 

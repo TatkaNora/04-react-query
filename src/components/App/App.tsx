@@ -8,7 +8,7 @@ import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import MovieModal from "../MovieModal/MovieModal";
 import { fetchMovies } from "../../services/movieService";
-import { Movie, MovieSearchResponse } from "../../types/movie";
+import { Movie } from "../../types/movie";
 import ReactPaginate from "react-paginate";
 
 export default function App() {
