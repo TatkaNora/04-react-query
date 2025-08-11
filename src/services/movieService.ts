@@ -1,6 +1,14 @@
 import axios from "axios";
-import { MovieSearchResponse } from "../types/movie";
+import { Movie } from "../types/movie";
 import { toast } from "react-hot-toast";
+
+export interface MovieSearchResponse {
+    page: number
+    results: Movie[]
+    total_pages: number
+    total_results: number
+}
+
 
 const API_URL = "https://api.themoviedb.org/3/search/movie";
 
@@ -8,7 +16,6 @@ export async function fetchMovies(query: string, page: number): Promise<MovieSea
     const token = import.meta.env.VITE_API_MOVIE_TOKEN;
     if (!token) {
         toast.error("API token is missing. Check your .env file.");
-        console.log("API token is missing. Check your .env file.");
         return null;
     }
 
